@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+a.txt
+chatroom.json
+itchat.pkl
+QR.png
+.vscode/settings.json
