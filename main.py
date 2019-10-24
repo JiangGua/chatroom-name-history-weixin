@@ -12,9 +12,27 @@ def anchor_in_chatroom_name(mark):
     room_name = chat_rooms[start:end]
     return room_name
 
-if __name__ == "__main__":
-    itchat.auto_login(hotReload=True)
+@itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
+def fetch_system_notification_name_change(msg):
+    #print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
+    if user_in_group(msg['User']['MemberList'], ('酱瓜')):
+        print('Yes')
 
+def user_in_group(msg_memberlist, other_users):
+    """
+        调用方法: user_in_group(msg['User']['MemberList'], stored_usernames_list)
+        返回布尔值
+    """
+    for item in msg_memberlist:
+        if str(item['NickName']) in other_users:
+            return True
+        if str(item['DisplayName']) in other_users:
+            return True
+        return False
+
+if __name__ == "__main__":
+    itchat.auto_login(hotReload=True)   # enableCmdQR=2
+    itchat.run()
     room_name = anchor_in_chatroom_name('[NSFW]')
     with open('a.txt', 'w', encoding='utf-8') as file_obj:
         file_obj.write(room_name)
