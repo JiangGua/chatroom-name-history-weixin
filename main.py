@@ -14,25 +14,31 @@ def anchor_in_chatroom_name(mark):
 
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
-    #print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
-    if user_in_group(msg['User']['MemberList'], ('酱瓜')):
-        print('Yes')
+    # print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
+    if str(msg['Text']).find("群名") != -1:
+        msg_memberlist = msg['User']['MemberList']
+        current_member_list = set([str(item['NickName']) for item in msg_memberlist] + [str(item['DisplayName']) for item in msg_memberlist])
+        if users_in_chatroom(current_member_list, ('酱瓜')) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
+            save_users(current_member_list)
+            save_chatroom_name(str(msg['Text'])[7:-1])
+            # print(str(msg['Text'])[7:-1])
 
-def user_in_group(msg_memberlist, other_users):
+def users_in_chatroom(current_member_list, stored_member_list):
     """
-        调用方法: user_in_group(msg['User']['MemberList'], stored_usernames_list)
-        返回布尔值
+        调用方法: user_in_chatroom(current_member_list, stored_member_list)
+        返回交集的元素个数
     """
-    for item in msg_memberlist:
-        if str(item['NickName']) in other_users:
-            return True
-        if str(item['DisplayName']) in other_users:
-            return True
-        return False
+    current_member_list = set(current_member_list)
+    stored_member_list = set(stored_member_list)
+    return len(current_member_list & stored_member_list)
+
+def save_users(current_member_list):
+    pass
+
+def save_chatroom_name(name):
+    pass
+    
 
 if __name__ == "__main__":
     itchat.auto_login(hotReload=True)   # enableCmdQR=2
     itchat.run()
-    room_name = anchor_in_chatroom_name('[NSFW]')
-    with open('a.txt', 'w', encoding='utf-8') as file_obj:
-        file_obj.write(room_name)
