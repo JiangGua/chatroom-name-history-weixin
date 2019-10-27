@@ -1,4 +1,6 @@
-import itchat
+import os
+import json
+import itchat 
 
 def anchor_in_chatroom_name(mark):
     """
@@ -14,14 +16,25 @@ def anchor_in_chatroom_name(mark):
 
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
+
+    def get_stored_member_list():
+        with open('output/users.json', 'r', encoding='utf-8') as f:
+            users = f.read()
+            users = set(json.loads(users))
+        return users
+
     # print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
     if str(msg['Text']).find("群名") != -1:
         msg_memberlist = msg['User']['MemberList']
         current_member_list = set([str(item['NickName']) for item in msg_memberlist] + [str(item['DisplayName']) for item in msg_memberlist])
-        if users_in_chatroom(current_member_list, ('酱瓜')) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
+        
+        stored_member_list = get_stored_member_list()
+        #TODO: 那我要是第一次用，还没这个文件呢
+        
+        if users_in_chatroom(current_member_list, stored_member_list) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
             save_users(current_member_list)
             save_chatroom_name(str(msg['Text'])[7:-1])
-            # print(str(msg['Text'])[7:-1])
+            print(str(msg['Text'])[7:-1])
 
 def users_in_chatroom(current_member_list, stored_member_list):
     """
@@ -33,12 +46,15 @@ def users_in_chatroom(current_member_list, stored_member_list):
     return len(current_member_list & stored_member_list)
 
 def save_users(current_member_list):
-    pass
+    with open('output/users.json', 'w', encoding='utf-8') as f:
+        f.write(json.dumps(list(current_member_list)))
 
 def save_chatroom_name(name):
     pass
     
 
 if __name__ == "__main__":
+    if not os.path.exists('output'):
+        os.makedirs('output')
     itchat.auto_login(hotReload=True)   # enableCmdQR=2
     itchat.run()
