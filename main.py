@@ -16,15 +16,39 @@ def anchor_in_chatroom_name(mark):
     room_name = chat_rooms[start:end]
     return room_name
 
+def get_stored_history():
+        with open('output/name_history.json', 'r', encoding='utf-8') as f:
+            history = f.read()
+            history = json.loads(history)
+        return history
+
+def generate_timeline_webpage():
+    root = os.path.dirname(os.path.abspath(__file__))
+    templates_dir = os.path.join(root, 'static', 'template')
+    env = Environment(loader = FileSystemLoader(templates_dir))
+    template = env.get_template('index.html')
+    filename = os.path.join(root, 'static', 'html', 'index.html')
+    config = os.path.join(root, 'config.json')
+    with open(config, 'r',encoding='utf-8') as f:
+        config = f.read()
+        config = json.loads(config)
+        title = str(config["title"])
+
+    history = get_stored_history()
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(template.render(
+            title = title,
+            items = history,
+        ))
+
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
-
     def get_stored_member_list():
         with open('output/users.json', 'r', encoding='utf-8') as f:
             users = f.read()
             users = set(json.loads(users))
         return users
-
     # print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
     if str(msg['Text']).find("群名") != -1:
         msg_memberlist = msg['User']['MemberList']
@@ -35,11 +59,13 @@ def fetch_system_notification_name_change(msg):
         except IOError:
             save_users(current_member_list)
             save_chatroom_name(str(msg['Text'])[7:-1])
+            generate_timeline_webpage()
             print(str(msg['Text'])[7:-1])
 
         if users_in_chatroom(current_member_list, stored_member_list) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
             save_users(current_member_list)
             save_chatroom_name(str(msg['Text'])[7:-1])
+            generate_timeline_webpage()
             print(str(msg['Text'])[7:-1])
 
 def users_in_chatroom(current_member_list, stored_member_list):
@@ -56,12 +82,6 @@ def save_users(current_member_list):
         f.write(json.dumps(list(current_member_list)))
 
 def save_chatroom_name(name):
-    def get_stored_history():
-        with open('output/name_history.json', 'r', encoding='utf-8') as f:
-            history = f.read()
-            history = json.loads(history)
-        return history
-
     def save_history(history):
          with open('output/name_history.json', 'w', encoding='utf-8') as f:
             f.write(json.dumps(list(history)))
@@ -75,30 +95,6 @@ def save_chatroom_name(name):
         "name": name,
     })
     save_history(history)
-    
-def generate_timeline_webpage():
-    root = os.path.dirname(os.path.abspath(__file__))
-    templates_dir = os.path.join(root, 'static', 'template')
-    env = Environment(loader = FileSystemLoader(templates_dir))
-    template = env.get_template('index.html')
-    filename = os.path.join(root, 'static', 'html', 'index.html')
-    config = os.path.join(root, 'config.json')
-    with open(config, 'r',encoding='utf-8') as f:
-        config = f.read()
-        config = json.loads(config)
-        title = str(config["title"])
-
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write(template.render(
-            title = title,
-            items    = [{
-                "date": "2020-01-21",
-                "name": "[TEST]测试名1",
-            }, {
-                "date": "2020-01-20",
-                "name": "[TEST]测试名2",
-            }],
-        ))
 
 if __name__ == "__main__":
     if not os.path.exists('output'):
