@@ -3,6 +3,7 @@ import json
 import time
 import itchat
 from jinja2 import Environment, FileSystemLoader
+from git import Repo
 
 def anchor_in_chatroom_name(mark):
     """
@@ -22,6 +23,26 @@ def get_stored_history():
             history = json.loads(history)
         return history
 
+def deploy_git():
+    with open('config.json', 'r', encoding='utf-8') as f:
+        content = f.read()
+        config = json.loads(content)
+        remote = str(config["repo"])
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    repo_dir = os.path.join(root, 'static', 'html')
+
+    try:
+        repo = Repo.init(repo_dir)
+        remote = repo.create_remote(name='remote', url=remote)
+    except:
+        repo = Repo(repo_dir)
+        remote = repo.remotes.remote
+
+    repo.git.add(all=True)
+    repo.git.commit(m='Update')
+    remote.push(refspec='master:master')
+
 def generate_timeline_webpage():
     root = os.path.dirname(os.path.abspath(__file__))
     templates_dir = os.path.join(root, 'static', 'template')
@@ -33,14 +54,13 @@ def generate_timeline_webpage():
         config = f.read()
         config = json.loads(config)
         title = str(config["title"])
-
     history = get_stored_history()
-
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(template.render(
             title = title,
             items = history,
         ))
+    deploy_git()
 
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
@@ -59,14 +79,16 @@ def fetch_system_notification_name_change(msg):
         except IOError:
             save_users(current_member_list)
             save_chatroom_name(str(msg['Text'])[7:-1])
-            generate_timeline_webpage()
             print(str(msg['Text'])[7:-1])
+            generate_timeline_webpage()
+            print('Saved')
 
         if users_in_chatroom(current_member_list, stored_member_list) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
             save_users(current_member_list)
             save_chatroom_name(str(msg['Text'])[7:-1])
-            generate_timeline_webpage()
             print(str(msg['Text'])[7:-1])
+            generate_timeline_webpage()
+            print('Saved')
 
 def users_in_chatroom(current_member_list, stored_member_list):
     """
@@ -95,6 +117,7 @@ def save_chatroom_name(name):
         "name": name,
     })
     save_history(history)
+
 
 if __name__ == "__main__":
     if not os.path.exists('output'):
