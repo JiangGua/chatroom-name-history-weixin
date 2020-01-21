@@ -82,9 +82,15 @@ def generate_timeline_webpage():
     env = Environment(loader = FileSystemLoader(templates_dir))
     template = env.get_template('index.html')
     filename = os.path.join(root, 'static', 'html', 'index.html')
+    config = os.path.join(root, 'config.json')
+    with open(config, 'r',encoding='utf-8') as f:
+        config = f.read()
+        config = json.loads(config)
+        title = str(config["title"])
+
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(template.render(
-            title = "Hello Jinja2",
+            title = title,
             items    = [{
                 "date": "2020-01-21",
                 "name": "[TEST]测试名1",
