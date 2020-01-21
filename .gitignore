@@ -110,3 +110,5 @@ itchat.pkl
 QR.png
 system_note.json
 output/
+static/html
+.vscode/

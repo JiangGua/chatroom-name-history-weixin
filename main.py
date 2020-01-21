@@ -1,6 +1,7 @@
 import os
 import json
-import itchat 
+import itchat
+from jinja2 import Environment, FileSystemLoader
 
 def anchor_in_chatroom_name(mark):
     """
@@ -52,9 +53,27 @@ def save_users(current_member_list):
 def save_chatroom_name(name):
     pass
     
+def generate_timeline_webpage():
+    root = os.path.dirname(os.path.abspath(__file__))
+    templates_dir = os.path.join(root, 'static', 'template')
+    env = Environment( loader = FileSystemLoader(templates_dir) )
+    template = env.get_template('index.html')
+    filename = os.path.join(root, 'static', 'html', 'index.html')
+    with open(filename, 'w', encoding="utf-8") as f:
+        f.write(template.render(
+            title = "Hello Jinja2",
+            items    = [{
+                "date": "2020-01-21",
+                "name": "[TEST]测试名1",
+            }, {
+                "date": "2020-01-20",
+                "name": "[TEST]测试名2",
+            }],
+        ))
 
 if __name__ == "__main__":
     if not os.path.exists('output'):
         os.makedirs('output')
+    generate_timeline_webpage()
     itchat.auto_login(hotReload=True)   # enableCmdQR=2
     itchat.run()
