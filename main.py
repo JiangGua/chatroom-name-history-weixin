@@ -9,10 +9,10 @@ from modules.deploy.history_json import deploy_json
 from modules.deploy.website import deploy_website
 
 def get_stored_history():
-        with open('output/name_history.json', 'r', encoding='utf-8') as f:
-            history = f.read()
-            history = json.loads(history)
-        return history
+    with open('output/name_history.json', 'r', encoding='utf-8') as f:
+        history = f.read()
+        history = json.loads(history)
+    return history
 
 def generate_timeline_webpage():
     root = os.path.dirname(os.path.abspath(__file__))
@@ -90,9 +90,8 @@ def save_chatroom_name(name):
     })
     save_history(history)
 
-
 if __name__ == "__main__":
     if not os.path.exists('output'):
         os.makedirs('output')
-    itchat.auto_login(hotReload=True)   # enableCmdQR=2
+    itchat.auto_login(hotReload=True, enableCmdQR=2)   # enableCmdQR=2
     itchat.run()
