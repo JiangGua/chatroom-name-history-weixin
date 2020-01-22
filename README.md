@@ -12,7 +12,7 @@ docker pull jonbgua/chatroom-name-history-weixin
 
 按照如图挂载文件/文件夹（图为群晖的Docker GUI）：
 
-![群晖Docker样例](docs/docker_setting_1.png)
+![群晖Docker样例](https://cdn.jsdelivr.net/gh/jianggua/chatroom-name-history-weixin@master/docs/docker_setting_1.png)
 
 在Docker容器中新建一个Bash会话，执行如下命令：
 
