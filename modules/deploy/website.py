@@ -30,7 +30,7 @@ def deploy_website():
 
     repo.git.add(all=True)
     repo.git.commit(m='Update')
-    remote.push(refspec='master:master')
+    remote.push(refspec='master:master', force=True)
 
 if __name__ == "__main__":
     deploy_website()

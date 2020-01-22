@@ -23,7 +23,7 @@ def deploy_json():
 
     repo.git.add('name_history.json')
     repo.git.commit(m='Update')
-    remote.push(refspec='master:data')
+    remote.push(refspec='master:data', force=True)
 
 if __name__ == "__main__":
     deploy_json()
