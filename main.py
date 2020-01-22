@@ -5,17 +5,7 @@ import itchat
 from jinja2 import Environment, FileSystemLoader
 from git import Repo
 
-def anchor_in_chatroom_name(mark):
-    """
-        通过群聊名中手动设置的锚点词对群聊进行定位.
-        形参 mark 是一个字符串, 即手动设置保持不变的锚点, 
-        返回一个字符串, 为提取出的群名称。
-    """
-    chat_rooms = str(itchat.get_chatrooms())
-    end = chat_rooms.find(mark) + len(mark)
-    start = chat_rooms.rfind('NickName', 0, end) + 12
-    room_name = chat_rooms[start:end]
-    return room_name
+from modules.deploy.history_json import deploy_json
 
 def get_stored_history():
         with open('output/name_history.json', 'r', encoding='utf-8') as f:
