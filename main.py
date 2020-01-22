@@ -63,6 +63,7 @@ def fetch_system_notification_name_change(msg):
             stored_member_list = get_stored_member_list()
         except IOError:
             save_and_gen(current_member_list, msg)
+            return 0
 
         if users_in_chatroom(current_member_list, stored_member_list) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
             save_and_gen(current_member_list, msg)
