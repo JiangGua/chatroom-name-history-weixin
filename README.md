@@ -4,7 +4,28 @@
 
 ## Docker 部署
 
-建议将 output/ 挂载出来。
+从Docker Hub拉取：
+
+```shell
+docker pull jonbgua/chatroom-name-history-weixin
+```
+
+按照如图挂载文件/文件夹（图为群晖的Docker GUI）：
+
+![群晖Docker样例](docs/docker_setting_1.png)
+
+在Docker容器中新建一个Bash会话，执行如下命令：
+
+```shell
+git config --global user.name "NAME"
+git config --global user.email "EMAIL"
+ssh-keygen
+cat /root/.ssh/id_rsa.pub
+```
+
+然后还得输一个信任Git证书的'yes'。
+
+注：Git仓库地址需要用SSH协议的。
 
 ## TO-DO
 
