@@ -49,3 +49,7 @@ cat /root/.ssh/id_rsa.pub
 [Tutorial - GitPython](https://gitpython.readthedocs.io/en/stable/tutorial.html)
 
 [How to push to remote repo with GitPython - StackOverflow](https://stackoverflow.com/questions/41429525/how-to-push-to-remote-repo-with-gitpython)
+
+### Docker 化
+
+[Containerize a Python App in 5 Minutes](https://www.wintellect.com/containerize-python-app-5-minutes/)
