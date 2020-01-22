@@ -6,32 +6,13 @@ from jinja2 import Environment, FileSystemLoader
 from git import Repo
 
 from modules.deploy.history_json import deploy_json
+from modules.deploy.website import deploy_website
 
 def get_stored_history():
         with open('output/name_history.json', 'r', encoding='utf-8') as f:
             history = f.read()
             history = json.loads(history)
         return history
-
-def deploy_git():
-    with open('config.json', 'r', encoding='utf-8') as f:
-        content = f.read()
-        config = json.loads(content)
-        remote = str(config["repo"])
-
-    root = os.path.dirname(os.path.abspath(__file__))
-    repo_dir = os.path.join(root, 'static', 'html')
-
-    try:
-        repo = Repo.init(repo_dir)
-        remote = repo.create_remote(name='remote', url=remote)
-    except:
-        repo = Repo(repo_dir)
-        remote = repo.remotes.remote
-
-    repo.git.add(all=True)
-    repo.git.commit(m='Update')
-    remote.push(refspec='master:master')
 
 def generate_timeline_webpage():
     root = os.path.dirname(os.path.abspath(__file__))
@@ -64,7 +45,7 @@ def fetch_system_notification_name_change(msg):
         save_chatroom_name(str(msg['Text'])[7:-1])
         print(str(msg['Text'])[7:-1])
         generate_timeline_webpage()
-        deploy_git()
+        deploy_website()
         deploy_json()
         print('Saved')
 
