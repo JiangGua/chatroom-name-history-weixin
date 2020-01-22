@@ -60,7 +60,6 @@ def generate_timeline_webpage():
             title = title,
             items = history,
         ))
-    deploy_git()
 
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
@@ -69,6 +68,16 @@ def fetch_system_notification_name_change(msg):
             users = f.read()
             users = set(json.loads(users))
         return users
+
+    def save_and_gen(current_member_list, msg):
+        save_users(current_member_list)
+        save_chatroom_name(str(msg['Text'])[7:-1])
+        print(str(msg['Text'])[7:-1])
+        generate_timeline_webpage()
+        deploy_git()
+        deploy_json()
+        print('Saved')
+
     # print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
     if str(msg['Text']).find("群名") != -1:
         msg_memberlist = msg['User']['MemberList']
@@ -77,18 +86,10 @@ def fetch_system_notification_name_change(msg):
         try:
             stored_member_list = get_stored_member_list()
         except IOError:
-            save_users(current_member_list)
-            save_chatroom_name(str(msg['Text'])[7:-1])
-            print(str(msg['Text'])[7:-1])
-            generate_timeline_webpage()
-            print('Saved')
+            save_and_gen(current_member_list, msg)
 
         if users_in_chatroom(current_member_list, stored_member_list) > (len(current_member_list) // 3):  # 允许 2/3 的用户改名（这么说其实并不严谨，毕竟有俩名）
-            save_users(current_member_list)
-            save_chatroom_name(str(msg['Text'])[7:-1])
-            print(str(msg['Text'])[7:-1])
-            generate_timeline_webpage()
-            print('Saved')
+            save_and_gen(current_member_list, msg)
 
 def users_in_chatroom(current_member_list, stored_member_list):
     """
