@@ -13,10 +13,13 @@ def deploy_website():
         remote = str(config["repo"])
 
     # 复制 CSS & JS
-    repo_dir = os.path.realpath(os.path.join(root, 'static', 'html', 'src'))
-    template_dir = os.path.realpath(os.path.join(root, 'static', 'template', 'src'))
-    shutil.copytree(template_dir, repo_dir)
-
+    try:
+        repo_dir = os.path.realpath(os.path.join(root, 'static', 'html', 'src'))
+        template_dir = os.path.realpath(os.path.join(root, 'static', 'template', 'src'))
+        shutil.copytree(template_dir, repo_dir)
+    except:
+        pass
+    
     repo_dir = os.path.join(root, 'static', 'html')
     try:
         repo = Repo.init(repo_dir)
