@@ -116,12 +116,12 @@ if __name__ == "__main__":
                 deploy_website()
                 deploy_json()
                 print('Saved')
-            
+                os._exit(0)
+                
         if ('date' in locals()) and ('name' in locals()):
             save_chatroom_name(date, name)
-        exit()
+            os._exit(0)
     except:
-        print("Now logging in...")
         pass
     
     itchat.auto_login(hotReload=True, enableCmdQR=2)   # enableCmdQR=2
