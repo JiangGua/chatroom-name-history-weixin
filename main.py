@@ -117,7 +117,7 @@ if __name__ == "__main__":
                 deploy_json()
                 print('Saved')
             
-        if (date in locals()) and (name in locals()):
+        if ('date' in locals()) and ('name' in locals()):
             save_chatroom_name(date, name)
         exit()
     except getopt.GetoptError:
