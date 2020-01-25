@@ -1,6 +1,9 @@
 import os
 import json
 import time
+import getopt
+import sys
+
 import itchat
 from jinja2 import Environment, FileSystemLoader
 from git import Repo
@@ -47,7 +50,8 @@ def fetch_system_notification_name_change(msg):
 
     def save_and_gen(current_member_list, msg):
         save_users(current_member_list)
-        save_chatroom_name(str(msg['Text'])[7:-1])
+        date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        save_chatroom_name(date, str(msg['Text'])[7:-1])
         print(str(msg['Text'])[7:-1])
         generate_timeline_webpage()
         deploy_website()
@@ -81,7 +85,7 @@ def save_users(current_member_list):
     with open('output/users.json', 'w', encoding='utf-8') as f:
         f.write(json.dumps(list(current_member_list)))
 
-def save_chatroom_name(name):
+def save_chatroom_name(date, name):
     def save_history(history):
          with open('output/name_history.json', 'w', encoding='utf-8') as f:
             f.write(json.dumps(list(history)))
@@ -91,7 +95,7 @@ def save_chatroom_name(name):
         history = []
 
     history.insert(0, {
-        "date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+        "date": date,
         "name": name,
     })
     save_history(history)
@@ -99,5 +103,25 @@ def save_chatroom_name(name):
 if __name__ == "__main__":
     if not os.path.exists('output'):
         os.makedirs('output')
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], '-d:-n:-u', ['date=', 'name=', 'upload'])
+        for opt_name, opt_value in opts:
+            if opt_name in ('-d', '--date'):
+                date = opt_value
+            if opt_name in ('-n', '--name'):
+                name = opt_value
+            if opt_name in ('-u', '--upload'):
+                generate_timeline_webpage()
+                deploy_website()
+                deploy_json()
+                print('Saved')
+            
+        if (date in locals()) and (name in locals()):
+            save_chatroom_name(date, name)
+        exit()
+    except getopt.GetoptError:
+        pass
+    
     itchat.auto_login(hotReload=True, enableCmdQR=2)   # enableCmdQR=2
     itchat.run()
