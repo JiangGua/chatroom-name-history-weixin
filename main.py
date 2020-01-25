@@ -120,7 +120,8 @@ if __name__ == "__main__":
         if ('date' in locals()) and ('name' in locals()):
             save_chatroom_name(date, name)
         exit()
-    except getopt.GetoptError:
+    except:
+        print("Now logging in...")
         pass
     
     itchat.auto_login(hotReload=True, enableCmdQR=2)   # enableCmdQR=2
