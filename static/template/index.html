@@ -19,7 +19,7 @@
 
         <ul class="timeline">
           {% for item in items %}
-          <li class="event" data-date="{{ item.date }}">
+          <li class="event" data-date="{{ item.date }}" timestamp="{{item.timestamp}}">
             <h3>{{ item.name }}</h3>
           </li>
           {% endfor %}

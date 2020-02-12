@@ -50,8 +50,7 @@ def fetch_system_notification_name_change(msg):
 
     def save_and_gen(current_member_list, msg):
         save_users(current_member_list)
-        date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        save_chatroom_name(date, str(msg['Text'])[7:-1])
+        save_chatroom_name(time.time(), str(msg['Text'])[7:-1])
         print(str(msg['Text'])[7:-1])
         generate_timeline_webpage()
         deploy_website()
@@ -85,18 +84,24 @@ def save_users(current_member_list):
     with open('output/users.json', 'w', encoding='utf-8') as f:
         f.write(json.dumps(list(current_member_list)))
 
-def save_chatroom_name(date, name):
+def save_chatroom_name(timestamp, name):
     def save_history(history):
-         with open('output/name_history.json', 'w', encoding='utf-8') as f:
+        root = os.path.dirname(os.path.abspath(__file__))
+        # root = os.path.join(root, '../../')
+        name_history_path = os.path.join(root, 'output', 'name_history.json')
+        with open(name_history_path, 'w', encoding='utf-8') as f:
             f.write(json.dumps(list(history)))
+
     try:
         history = list(get_stored_history())
     except IOError:
         history = []
+    date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
 
     history.insert(0, {
         "date": date,
         "name": name,
+        "timestamp": timestamp,
     })
     save_history(history)
 
@@ -120,7 +125,9 @@ if __name__ == "__main__":
                 
         if ('date' in locals()) and ('name' in locals()):
             print(date, name)
-            save_chatroom_name(date, name)
+            timeArray = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+            timestamp = time.mktime(timeArray)
+            save_chatroom_name(timestamp, name)
             os._exit(0)
     except:
         pass
