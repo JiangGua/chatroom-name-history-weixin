@@ -115,10 +115,11 @@ if __name__ == "__main__":
                 generate_timeline_webpage()
                 deploy_website()
                 deploy_json()
-                print('Saved')
+                print('Uploaded')
                 os._exit(0)
                 
         if ('date' in locals()) and ('name' in locals()):
+            print(date, name)
             save_chatroom_name(date, name)
             os._exit(0)
     except:
