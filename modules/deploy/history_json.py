@@ -17,9 +17,12 @@ def deploy_json():
     try:
         repo = Repo.init(repo_dir)
         remote = repo.create_remote(name='remote', url=remote)
+        branch_data = repo.create_head('data', 'HEAD^')
+        branch_data.checkout()
     except:
         repo = Repo(repo_dir)
         remote = repo.remotes.remote
+        # repo.heads.data.checkout()  -- 注释掉是假定已经切好分支了
 
     repo.git.add('name_history.json')
     repo.git.commit(m='Update')
