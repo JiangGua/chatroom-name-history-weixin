@@ -12,6 +12,14 @@ from modules.data_operator.chatroom_name import get_stored_history, save_chatroo
 from modules.data_operator.users import save_users, get_stored_member_list, users_in_chatroom
 from modules.generator.html_timeline import generate_timeline_webpage
 
+# 处理命令行参数 --upload
+def gen_and_upload():
+    generate_timeline_webpage()
+    deploy_website()
+    print("3")
+    deploy_json()
+    print('Uploaded')
+
 @itchat.msg_register(itchat.content.NOTE, isGroupChat=True)
 def fetch_system_notification_name_change(msg):
     def save_and_gen(current_member_list, msg):
@@ -43,20 +51,17 @@ if __name__ == "__main__":
 
     # 命令行参数处理
     try:
-        opts, args = getopt.getopt(sys.argv[1:], '-d:-n:-u', ['date=', 'name=', 'upload'])
+        opts, args = getopt.getopt(sys.argv[1:], '-d:-n:-u', ['date=', 'name=', 'upload', 'pull'])
         for opt_name, opt_value in opts:
             if opt_name in ('-d', '--date'):
                 date = opt_value
             if opt_name in ('-n', '--name'):
                 name = opt_value
             if opt_name in ('-u', '--upload'):
-                generate_timeline_webpage()
-                deploy_website()
-                print("3")
-                deploy_json()
-                print('Uploaded')
+                gen_and_upload()
                 os._exit(0)
-                
+
+        # 如果成功接收日期和群名 则记录之        
         if ('date' in locals()) and ('name' in locals()):
             print(date, name)
             timeArray = time.strptime(date, "%Y-%m-%d %H:%M:%S")
