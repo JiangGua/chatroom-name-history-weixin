@@ -14,7 +14,7 @@ def get_stored_history():
 
 def save_history(history):
         with open(json_path, 'w', encoding='utf-8') as f:
-            f.write(json.dumps(list(history)))
+            f.write(json.dumps(list(history), ensure_ascii=False))
 
 def save_chatroom_name(timestamp, name):
     try:

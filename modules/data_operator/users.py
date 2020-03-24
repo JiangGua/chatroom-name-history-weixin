@@ -13,7 +13,7 @@ def get_stored_member_list():
 
 def save_users(current_member_list):
     with open(json_path, 'w', encoding='utf-8') as f:
-        f.write(json.dumps(list(current_member_list)))
+        f.write(json.dumps(list(current_member_list), ensure_ascii=False))
 
 def users_in_chatroom(current_member_list, stored_member_list):
     """
