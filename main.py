@@ -16,7 +16,6 @@ from modules.generator.html_timeline import generate_timeline_webpage
 def gen_and_upload():
     generate_timeline_webpage()
     deploy_website()
-    print("3")
     deploy_json()
     print('Uploaded')
 
@@ -31,7 +30,7 @@ def fetch_system_notification_name_change(msg):
         deploy_json()
         print('Saved')
 
-    # print(msg['Text'], str(msg['User']['MemberList'][0]['NickName'])) # NickName 就是微信名，DisplayName 就是群昵称
+    # 判断是修改群名相关的系统消息
     if str(msg['Text']).find("群名") != -1:
         msg_memberlist = msg['User']['MemberList']
         current_member_list = set([str(item['NickName']) for item in msg_memberlist] + [str(item['DisplayName']) for item in msg_memberlist])
