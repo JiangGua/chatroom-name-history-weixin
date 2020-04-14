@@ -1,0 +1,6 @@
+deploy:
+    theme: "default"
+backup:
+    enable: false
+    repo: "REPO_URL"
+    branch: "master"

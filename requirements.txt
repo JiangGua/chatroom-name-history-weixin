@@ -1,3 +1,4 @@
 itchat
 jinja2
+pyyaml
 gitpython
