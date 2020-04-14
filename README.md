@@ -2,6 +2,8 @@
 
 本项目可记录微信群聊的群名，并且生成一个时间线静态页面部署到 Git 仓库中。配合 Github Pages 或 Netlify 一起食用更佳。
 
+
+
 ## Docker 部署
 
 从Docker Hub拉取：
@@ -27,6 +29,8 @@ cat /root/.ssh/id_rsa.pub
 
 注：Git仓库地址需要用SSH协议的。
 
+
+
 ## TO-DO
 
 - [ ] 向机器人说'status'可以得到系统运行状态的反馈
@@ -34,9 +38,19 @@ cat /root/.ssh/id_rsa.pub
 - [ ] 从远端重新获取历史记录（方便数据迁移）
 - [ ] 手动刷新成员昵称列表
 
+
+
+## 项目备注
+
+- 项目内部代号为 `Kotonoha`
+
+
+
 ## 参考资料
 
 毕竟Copy & Paste From Google/面向搜索引擎编程…（逃
+
+
 
 ### 页面模板
 
