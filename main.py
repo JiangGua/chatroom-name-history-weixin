@@ -141,11 +141,10 @@ class DataJsonOperator():
 
         flag = False    # 匹配成功则设为 True
 
-        #TODO: 怎么匹配饭团特色「黑学讨论群」?
         for chatroom in chatrooms:
             recorded_member_set = set([item['wxName'] for item in chatroom['members']])  # 记录中的成员名单
             intersection = recorded_member_set & current_member_set     # 交集
-            if len(intersection) > (max(len(recorded_member_set)//2, len(recorded_member_set)-3)):       # 允许1/2或3个(取较大者)人改名
+            if len(intersection) > (max(len(current_member_set)//2, len(current_member_set)-3)):       # 允许1/2或3个(取较大者)人改名
                 flag = True
                 chatroom['members'] = current_members
                 self.dump(chatrooms)
