@@ -1,4 +1,4 @@
-itchat
+itchat-uos
 jinja2
 pyyaml
 gitpython
